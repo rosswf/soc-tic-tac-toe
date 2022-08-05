@@ -8,7 +8,7 @@ import (
 
 func main() {
 	board := tictactoe.NewBoard()
-	game := tictactoe.NewTicTacToe(board)
+	game := tictactoe.NewTicTacToe(board, 'X')
 
 	result := game.Play()
 

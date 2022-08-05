@@ -10,8 +10,8 @@ type TicTacToe struct {
 	moves         int
 }
 
-func NewTicTacToe(board Board) *TicTacToe {
-	return &TicTacToe{board: board, currentPlayer: 'X'}
+func NewTicTacToe(board Board, startingPlayer rune) *TicTacToe {
+	return &TicTacToe{board: board, currentPlayer: startingPlayer}
 }
 
 func (t *TicTacToe) Play() string {
@@ -19,7 +19,12 @@ func (t *TicTacToe) Play() string {
 
 	for t.moves < 9 {
 		fmt.Printf("\n%c's turn! ", t.currentPlayer)
-		t.playMove(t.currentPlayer)
+		err := t.playerMove(t.currentPlayer)
+		if err != nil {
+			fmt.Print(err)
+			continue
+		}
+
 		fmt.Println(t.board)
 
 		if t.isWon() {
@@ -28,25 +33,22 @@ func (t *TicTacToe) Play() string {
 
 		t.currentPlayer = switchPlayer(t.currentPlayer)
 	}
-
 	return "It's a Draw!"
 }
 
-func (t *TicTacToe) playMove(player rune) {
-	for {
-		l, err := t.getPlayerInput()
-		if err != nil {
-			fmt.Printf("Oops something went wrong! %v\n", err)
-		}
-
-		x, y := l/3, l%3
-		err = t.board.playMove(x, y, t.currentPlayer)
-		if err == nil {
-			t.moves++
-			return
-		}
-		fmt.Printf("Enter a number from 1 to 9. %v\n", err)
+func (t *TicTacToe) playerMove(player rune) error {
+	l, err := t.getPlayerInput()
+	if err != nil {
+		return fmt.Errorf("Oops something went wrong! %v\n", err)
 	}
+
+	x, y := l/3, l%3
+	err = t.board.playMove(x, y, t.currentPlayer)
+	if err != nil {
+		return fmt.Errorf("Enter a number from 1 to 9. %v\n", err)
+	}
+	t.moves++
+	return nil
 }
 
 func (t TicTacToe) getPlayerInput() (int, error) {
