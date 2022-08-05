@@ -15,27 +15,28 @@ func NewTicTacToe(board Board) *TicTacToe {
 }
 
 func (t *TicTacToe) Play() string {
-	fmt.Println("Game Starting")
-	fmt.Println(t.board)
+	displayIntroduction()
 
 	for t.moves < 9 {
-		fmt.Printf("%c's turn!\n", t.currentPlayer)
-		t.move(t.currentPlayer)
+		fmt.Printf("\n%c's turn! ", t.currentPlayer)
+		t.playMove(t.currentPlayer)
 		fmt.Println(t.board)
 
-		t.currentPlayer = switchPlayer(t.currentPlayer)
+		if t.isWon() {
+			return fmt.Sprintf("%c is the winner!", t.currentPlayer)
+		}
 
+		t.currentPlayer = switchPlayer(t.currentPlayer)
 	}
 
-	return "Draw!"
-
+	return "It's a Draw!"
 }
 
-func (t *TicTacToe) move(player rune) {
+func (t *TicTacToe) playMove(player rune) {
 	for {
 		l, err := t.getPlayerInput()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("Oops something went wrong! %v\n", err)
 		}
 
 		x, y := l/3, l%3
@@ -48,14 +49,23 @@ func (t *TicTacToe) move(player rune) {
 	}
 }
 
-func (t *TicTacToe) getPlayerInput() (int, error) {
+func (t TicTacToe) getPlayerInput() (int, error) {
 	var location int
-	fmt.Print("Enter Location: ")
+	fmt.Print("Enter Move: ")
 	_, err := fmt.Scan(&location)
 	if err != nil {
 		return -1, err
 	}
 	return location - 1, nil
+}
+
+func (t TicTacToe) isWon() bool {
+	for i := 0; i < 3; i++ {
+		if t.board.checkRow(i) || t.board.checkColumn(i) {
+			return true
+		}
+	}
+	return t.board.checkDiags()
 }
 
 func switchPlayer(currentPlayer rune) rune {
@@ -65,4 +75,15 @@ func switchPlayer(currentPlayer rune) rune {
 	default:
 		return 'X'
 	}
+}
+
+func displayIntroduction() {
+	fmt.Println(`Welcome to tic tac toe!
+To make a move, enter the number corresponding to the location as show below
+The board and it's playable positions:
+1 | 2 | 3
+--+---+--
+4 | 5 | 6
+--+---+--
+7 | 8 | 9`)
 }
