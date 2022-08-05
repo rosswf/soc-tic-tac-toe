@@ -18,11 +18,11 @@ func NewBoard() Board {
 
 func (b *Board) playMove(x, y int, player rune) error {
 	if !(x < 3 && y < 3) {
-		return errors.New("Invalid location")
+		return errors.New("Invalid location.")
 	}
 
 	if b[x][y] != ' ' {
-		return errors.New("Invalid move")
+		return errors.New("Position already taken.")
 	}
 
 	b[x][y] = player
