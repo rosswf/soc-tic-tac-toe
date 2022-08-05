@@ -39,3 +39,15 @@ func (b Board) String() string {
 	}
 	return sb.String()
 }
+
+func (b Board) checkRow(i int) bool {
+	return b[i][0] == b[i][1] && b[i][1] == b[i][2] && b[i][2] != ' '
+}
+
+func (b Board) checkColumn(i int) bool {
+	return b[0][i] == b[1][i] && b[1][i] == b[2][i] && b[2][i] != ' '
+}
+
+func (b Board) checkDiags() bool {
+	return (b[0][0] == b[1][1] && b[1][1] == b[2][2] && b[2][2] != ' ') || (b[2][0] == b[1][1] && b[1][1] == b[0][2] && b[0][2] != ' ')
+}
